@@ -7,6 +7,9 @@ from rest_framework.response import Response
 from django.core.management.base import BaseCommand
 from airport.models import Airport
 
+DOMESTIC_AIRPORTS_API_URL = "http://stub.2xt.com.br/air/airports/pzrvlDwoCwlzrWJmOzviqvOWtm4dkvuc"
+DOMESTIC_AIRPORTS_API_USER = "demo"
+DOMESTIC_AIRPORTS_API_PSWD = "swnvlD"
 class Command(BaseCommand):
     
     def __init__(self, *args, **kwargs):
@@ -51,8 +54,8 @@ class Command(BaseCommand):
     def get_api_data(self):
         try: 
             request = requests.get(
-                url="http://stub.2xt.com.br/air/airports/pzrvlDwoCwlzrWJmOzviqvOWtm4dkvuc",
-                auth=("demo","swnvlD")
+                url=DOMESTIC_AIRPORTS_API_URL,
+                auth=(DOMESTIC_AIRPORTS_API_USER,DOMESTIC_AIRPORTS_API_PSWD)
             )
             response_data = json.loads(request.content)
             domestic_airport_data = [response_data[key] for key in response_data]

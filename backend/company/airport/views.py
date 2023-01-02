@@ -10,6 +10,9 @@ from datetime import datetime
 from rest_framework import status
 from .models import Airport
 # Create your views here.
+EXTERNAL_API_URL = "http://stub.2xt.com.br/air/search/pzrvlDwoCwlzrWJmOzviqvOWtm4dkvuc"
+EXTERNAL_API_USER = "demo"
+EXTERNAL_API_PSWD = "swnvlD"
 
 class FlightQueryView(APIView):
     def __init__(self, **kwargs) -> None:
@@ -74,14 +77,14 @@ class FlightQueryView(APIView):
         
     def getApiData(self):
         request_going = requests.get(
-            url=f"http://stub.2xt.com.br/air/search/pzrvlDwoCwlzrWJmOzviqvOWtm4dkvuc/{self.origin}/{self.destination}/{self.departure_date}",
-            auth=("demo","swnvlD")
+            url=f"{EXTERNAL_API_URL}/{self.origin}/{self.destination}/{self.departure_date}",
+            auth=({EXTERNAL_API_USER},{EXTERNAL_API_PSWD})
         )
         self.going_flights_data = json.loads(request_going.content)
         
         request_return = requests.get(
-            url=f"http://stub.2xt.com.br/air/search/pzrvlDwoCwlzrWJmOzviqvOWtm4dkvuc/{self.destination}/{self.origin}/{self.return_date}",
-            auth=("demo","swnvlD")
+            url=f"{EXTERNAL_API_URL}/{self.destination}/{self.origin}/{self.return_date}",
+            auth=({EXTERNAL_API_USER},{EXTERNAL_API_PSWD})
         )
         self.return_flights_data = json.loads(request_return.content)
     
