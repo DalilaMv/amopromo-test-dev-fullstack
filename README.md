@@ -38,6 +38,12 @@ This view returns all the possible going and back flight combinations and their 
 
 # Set Up
 
+obs.: these are the production urls:
+
+- backend: `https://dalilamvvv.pythonanywhere.com/`
+
+- frontend: `https://airportscompany.netlify.app/`
+
 To configure the project the following configurations were used:
 
 - Python version 3.8.10
