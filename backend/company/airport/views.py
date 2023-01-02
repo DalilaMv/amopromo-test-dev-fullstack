@@ -1,4 +1,5 @@
 import json
+import operator
 from django.http import JsonResponse
 from django.shortcuts import render
 import requests
@@ -21,7 +22,7 @@ class FlightQueryView(APIView):
         self.return_date = request.query_params.get("return_date")
         if self.origin == self.destination: 
             return Response(
-                {"error": f"The origin Airport {self.origin} is not registered in our database."},
+                {"error": f"The origin and destination airport cannot be the same."},
                 status=status.HTTP_400_BAD_REQUEST
             )
         if len(Airport.objects.filter(iata=self.origin)) == 0:
@@ -31,7 +32,7 @@ class FlightQueryView(APIView):
             )
         if len(Airport.objects.filter(iata=self.destination)) == 0:
             return Response(
-                {"error": f"The origin and destination airport cannot be the same."},
+                {"error": f"The destination Airport {self.destination} is not registered in our database."},
                 status=status.HTTP_400_BAD_REQUEST
             )
         if datetime.strptime(self.departure_date, '%Y-%m-%d') < datetime.now():
@@ -45,6 +46,7 @@ class FlightQueryView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         response = self.main()
+        response.sort(key=operator.itemgetter('price'))
         return Response({'options':response})
     
     def main(self):
