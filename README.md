@@ -2,6 +2,11 @@
 
 # Description
 
+obs.: production urls:
+
+- backend: `https://dalilamvvv.pythonanywhere.com/`
+
+- frontend: `https://airportscompany.netlify.app/`
 
 the following topics contain a brief explanation of what was done in each of the tasks performed in this project
 ###### PROBLEM 1
@@ -38,11 +43,6 @@ This view returns all the possible going and back flight combinations and their 
 
 # Set Up
 
-obs.: these are the production urls:
-
-- backend: `https://dalilamvvv.pythonanywhere.com/`
-
-- frontend: `https://airportscompany.netlify.app/`
 
 To configure the project the following configurations were used:
 
