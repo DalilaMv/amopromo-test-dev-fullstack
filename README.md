@@ -25,10 +25,14 @@ This view returns all the possible going and back flight combinations and their 
   - destination - destination airport IATA
   - departure_date - date of departure from the origin airport
   - return_date - date of return from the destination airport
+  
 <br>
+
 - example of curl request:
   - `curl -X GET "http://127.0.0.1:8000/api/airport/flight-query?origin=POA&destination=MAO&departure_date=2023-10-01&return_date=2023-10-05" -H 'Authorization: Token eb4f768a22a1baaa4b485eb223af7fe308751da8'`
+  
 <br>
+
 - obs.: the following token can be used in your request's header: `Token eb4f768a22a1baaa4b485eb223af7fe308751da8`
 
 
