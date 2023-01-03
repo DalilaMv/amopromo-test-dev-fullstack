@@ -43,7 +43,6 @@ This view returns all the possible going and back flight combinations and their 
 
 # Set Up
 
-
 To configure the project the following configurations were used:
 
 - Python version 3.8.10
@@ -56,9 +55,14 @@ To configure the project the following configurations were used:
 3. run `pip install -r requirements.txt`
 4. run `python manage.py runserver` to run the project
 
+##### Running test
+
+1. cd into `backend/company` directory
+2. run `python manage.py test`
+
 ##### Frontend setup
 
-1. cd into `frontend`
+1. cd into `frontend` directory
 2. run `npm install` or `yarn install`
 3. run `npm start` or `yarn start`
 
