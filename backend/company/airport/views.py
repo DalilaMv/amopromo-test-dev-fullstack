@@ -23,34 +23,16 @@ class FlightQueryView(APIView):
         self.destination = request.query_params.get("destination")
         self.departure_date = request.query_params.get("departure_date")
         self.return_date = request.query_params.get("return_date")
-        if self.origin == self.destination: 
+        error_message = self.validate()
+        if error_message:
             return Response(
-                {"error": f"The origin and destination airport cannot be the same."},
+                {"error": error_message},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        if len(Airport.objects.filter(iata=self.origin)) == 0:
-            return Response(
-                {"error": f"The origin Airport {self.origin} is not registered in our database."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        if len(Airport.objects.filter(iata=self.destination)) == 0:
-            return Response(
-                {"error": f"The destination Airport {self.destination} is not registered in our database."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        if datetime.strptime(self.departure_date, '%Y-%m-%d') < datetime.now():
-            return Response(
-                {"error": f"The departure date cannot be earlier than today's date"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        if datetime.strptime(self.return_date, '%Y-%m-%d') < datetime.strptime(self.departure_date, '%Y-%m-%d'):
-            return Response(
-                {"error": f"The return date cannot be earlier than the departure date."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+
         response = self.main()
         response.sort(key=operator.itemgetter('price'))
-        return Response({'options':response})
+        return Response({'options': response})
     
     def main(self):
         self.getApiData()
@@ -75,16 +57,55 @@ class FlightQueryView(APIView):
         
         return result
         
+    def validate(self) -> str:
+        """this method returns the error message in case of something goes wrong or None if everything goes right"""
+        conditions = [
+            {
+                "condition": not self.origin or not self.destination,
+                "message": "Both origin and destination airports must be informed."
+            },
+            {   
+                "condition": not self.return_date or not self.departure_date,
+                "message": "Both departure and return date must be informed."
+            },
+            {
+                "condition": self.origin == self.destination, 
+                "message": "The origin and destination airport cannot be the same."
+            },
+            {
+                "condition": len(Airport.objects.filter(iata=self.origin)) == 0, 
+                "message":  f"The origin Airport {self.origin} is not registered in our database."
+            },
+            {
+                "condition": len(Airport.objects.filter(iata=self.destination)) == 0, 
+                "message":  f"The destination Airport {self.destination} is not registered in our database."
+            },
+            {
+                "condition":  datetime.strptime(self.departure_date, '%Y-%m-%d') < datetime.now() if self.departure_date else True, 
+                "message": "The departure date cannot be earlier than today's date",
+            },
+            {
+                "condition": datetime.strptime(self.return_date, '%Y-%m-%d') < datetime.strptime(self.departure_date, '%Y-%m-%d') if self.return_date else True , 
+                "message":  "The return date cannot be earlier than the departure date.",
+            },
+        ]
+        
+        for condition in conditions:
+            if condition["condition"]:
+                return condition["message"]
+            
+        return None
+        
     def getApiData(self):
         request_going = requests.get(
             url=f"{EXTERNAL_API_URL}/{self.origin}/{self.destination}/{self.departure_date}",
-            auth=({EXTERNAL_API_USER},{EXTERNAL_API_PSWD})
+            auth=(EXTERNAL_API_USER,EXTERNAL_API_PSWD)
         )
         self.going_flights_data = json.loads(request_going.content)
         
         request_return = requests.get(
             url=f"{EXTERNAL_API_URL}/{self.destination}/{self.origin}/{self.return_date}",
-            auth=({EXTERNAL_API_USER},{EXTERNAL_API_PSWD})
+            auth=(EXTERNAL_API_USER,EXTERNAL_API_PSWD)
         )
         self.return_flights_data = json.loads(request_return.content)
     

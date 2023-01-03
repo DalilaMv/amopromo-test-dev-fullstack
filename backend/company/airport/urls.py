@@ -8,7 +8,7 @@ router = DefaultRouter()
 router.register('domestic-airports', AirportViewSet, basename="domestic-airports"),
 
 urlpatterns = [
-    path("flight-query", FlightQueryView.as_view()),
+    path("flight-query", FlightQueryView.as_view(), name="flight-query"),
 ]
 
 urlpatterns += router.urls
